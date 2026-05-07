@@ -390,9 +390,10 @@ class GeminiClient(ChatMixin, GemMixin, ResearchMixin):
 
             if not self._check_account_status():
                 logger.warning(
-                    f"Cannot sync activity. Account status: {self.account_status.name} - {self.account_status.description}"
+                    f"Stopping the activity watchdog. Account status: {self.account_status.name} - {self.account_status.description}"
                 )
-                continue
+                self.activity_task = None
+                break
 
             try:
                 logger.debug(
@@ -423,9 +424,10 @@ class GeminiClient(ChatMixin, GemMixin, ResearchMixin):
 
             if not self._check_account_status():
                 logger.warning(
-                    f"Cannot refresh cookies. Account status: {self.account_status.name} - {self.account_status.description}"
+                    f"Stopping the auto-refresh cookies. Account status: {self.account_status.name} - {self.account_status.description}"
                 )
-                continue
+                self.refresh_task = None
+                break
 
             try:
                 async with self._lock:
